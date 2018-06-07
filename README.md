@@ -166,7 +166,7 @@ com.maumjido.generate.mybatis.source.Main 실행.
       }
     }
 
-## Dao:HolidayDao.java (BaseDao에 기본 CRUD가 포함되어 있음)
+## Dao:HolidayDao.java ( [BaseDao](https://github.com/goni9071/generate-mybatis-source/blob/master/src/main/resources/template/BaseDao.java) 에 기본 CRUD가 포함되어 있음)
 
     import org.apache.ibatis.annotations.Mapper;
     import kr.co.gampartners.mobile.dao.base.BaseDao;
