@@ -6,6 +6,13 @@
 
   <repositories>
     <repository>
+      <!-- DO NOT set id to "local" because it is reserved by Maven -->
+      <id>local-lib</id>
+      <name>In Project Repo</name>
+      <url>file://${basedir}/lib</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
       <id>CUBRID</id>
       <name>CUBRID-releases</name>
       <url>http://maven.cubrid.org</url>
@@ -54,38 +61,23 @@
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml</artifactId>
-      <version>3.9</version>
-    </dependency>
-    <!-- jdbc driver 오라클 -->
+    <!-- Oracle -->
     <dependency>
       <groupId>com.oracle</groupId>
       <artifactId>ojdbc6</artifactId>
       <version>12.1.0.1</version>
     </dependency>
+    <!-- Mysql -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.21</version>
     </dependency>
+    <!-- Cubrid -->
     <dependency>
       <groupId>cubrid</groupId>
       <artifactId>cubrid-jdbc</artifactId>
       <version>8.4.3.1005</version>
-    </dependency>
-    <!-- zip -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
-      <version>1.8</version>
-    </dependency>
-    <!-- svn -->
-    <dependency>
-      <groupId>org.tmatesoft.svnkit</groupId>
-      <artifactId>svnkit</artifactId>
-      <version>1.8.7</version>
     </dependency>
     <!-- Maria -->
     <dependency>
@@ -94,10 +86,10 @@
       <version>1.1.7</version>
     </dependency>
     <!-- MSSQL -->
-    <!-- <dependency>
+    <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>sqljdbc4</artifactId>
       <version>4.0</version>
-    </dependency> -->
+    </dependency>
   </dependencies>
 </project>
