@@ -15,85 +15,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FileUtil {
   private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
   private static final int BUFFER_SIZE = 1024;
-
-  public static List<String> readExcel(String filePath) {
-    logger.info("Excel 파일 경로 {}", filePath);
-    XSSFRow row;
-    XSSFCell cell;
-    List<String> list = new ArrayList<String>();
-
-    try {
-      FileInputStream inputStream = new FileInputStream(filePath);
-      XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
-
-      // sheet수 취득
-      int sheetCn = workbook.getNumberOfSheets();
-
-      for (int cn = 0; cn < sheetCn; cn++) {
-
-        // 0번째 sheet 정보 취득
-        XSSFSheet sheet = workbook.getSheetAt(cn);
-
-        // 취득된 sheet에서 rows수 취득
-        int rows = sheet.getPhysicalNumberOfRows();
-
-        if (rows != 0) {
-          // 취득된 row에서 취득대상 cell수 취득
-          int cells = sheet.getRow(cn).getPhysicalNumberOfCells();
-          int r = 1;// 0 row는 헤더
-          for (; r < rows; r++) {
-            row = sheet.getRow(r); // row 가져오기
-            if (row != null) {
-              String txt = "";
-              for (int c = 0; c < cells; c++) {
-                cell = row.getCell(c);
-                if (cell != null) {
-                  String value = null;
-                  switch (cell.getCellType()) {
-                  case XSSFCell.CELL_TYPE_FORMULA:
-                    value = cell.getCellFormula();
-                    break;
-                  case XSSFCell.CELL_TYPE_NUMERIC:
-                    value = "" + cell.getNumericCellValue();
-                    break;
-                  case XSSFCell.CELL_TYPE_STRING:
-                    value = "" + cell.getStringCellValue();
-                    break;
-                  case XSSFCell.CELL_TYPE_BLANK:
-                    value = "null";
-                    break;
-                  case XSSFCell.CELL_TYPE_ERROR:
-                    value = "" + cell.getErrorCellValue();
-                    break;
-                  default:
-                  }
-                  txt += value + "\t";
-                } else {
-                  txt += "null\t";
-                }
-              } // for(c) 문
-              txt += "\n";
-              list.add(txt);
-            }
-          } // for(r) 문
-        }
-
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return list;
-  }
 
   /**
    * 텍스트 포맷의 파일을 줄단위로 읽어 배열로 반환한다.
