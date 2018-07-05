@@ -15,7 +15,7 @@ public class Main {
   private static Logger logger = LoggerFactory.getLogger(Main.class);
 
   /**
-   * Excel 파일을 통해 Generate-java-resource 생성
+   * Generate-java-resource 생성
    * 
    * @param args
    * @throws IOException
