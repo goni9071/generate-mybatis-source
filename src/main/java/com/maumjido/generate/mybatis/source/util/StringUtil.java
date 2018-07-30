@@ -109,10 +109,18 @@ public class StringUtil {
     } else if (dataType.toLowerCase().startsWith("number")) {
       if (dataType.contains("(")) {
         dataType = dataType.toLowerCase().replaceAll("\\(", "").replaceFirst("\\)", "").replaceAll("number", "");
-        if (Integer.valueOf(dataType) >= 19) {
-          dataType = "Long";
+        if (dataType.contains(",")) {
+          if (Integer.valueOf(dataType.split(",")[0]) >= 19) {
+            dataType = "Double";
+          } else {
+            dataType = "Float";
+          }
         } else {
-          dataType = "Integer";
+          if (Integer.valueOf(dataType) >= 19) {
+            dataType = "Long";
+          } else {
+            dataType = "Integer";
+          }
         }
       } else {
         dataType = "Integer";
