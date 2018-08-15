@@ -16,6 +16,7 @@ public class CustomPageable extends PageRequest implements Pageable {
   private static final long serialVersionUID = -8841888186692528689L;
   private boolean isMysql = true;
 
+  @Deprecated
   public CustomPageable() {
     super(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
   }
@@ -29,14 +30,17 @@ public class CustomPageable extends PageRequest implements Pageable {
    * @param size
    *          the size of the page to be returned.
    */
+  @Deprecated
   public CustomPageable(int page, int size) {
     super(page, size);
   }
 
+  @Deprecated
   public CustomPageable(int page, int size, Direction direction, String... properties) {
     super(page, size, new Sort(direction, properties));
   }
 
+  @Deprecated
   public CustomPageable(int page, int size, Sort sort) {
     super(page, size, sort);
   }
