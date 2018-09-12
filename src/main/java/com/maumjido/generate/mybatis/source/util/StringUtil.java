@@ -134,4 +134,8 @@ public class StringUtil {
   public static boolean isNotEmpty(String src) {
     return src != null && src.trim().length() > 0;
   }
+
+  public static boolean isEmpty(String src) {
+    return !isNotEmpty(src);
+  }
 }
