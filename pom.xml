@@ -91,6 +91,12 @@
       <artifactId>sqljdbc4</artifactId>
       <version>4.0</version>
     </dependency>
+    <!-- TIBERO -->
+    <dependency>
+      <groupId>com.tmaxsoft.tibero</groupId>
+      <artifactId>tibero5-jdbc</artifactId>
+      <version>14</version>
+    </dependency>
     <!-- poi -->
     <!-- xls -->
     <dependency>

@@ -5,14 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.maumjido.generate.mybatis.source.common.Constants;
+
 public class StringUtil {
-  private static final String removePrefixTableName = SystemProperties.getProperty("remove.prefix.table_name");
 
   public static String convertCamelNaming(String source, boolean isFirstCharUpper) {
     if (source == null) {
       return source;
     }
-    source = source.replaceFirst("^" + removePrefixTableName, "");
+    source = source.replaceFirst("^" + Constants.REMOVE_PREFIX_TABLENAME, "");
     StringBuffer result = new StringBuffer();
     source = source.toLowerCase();
     boolean isUpper = false;

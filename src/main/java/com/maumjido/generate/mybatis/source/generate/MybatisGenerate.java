@@ -7,11 +7,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.maumjido.generate.mybatis.source.common.Constants;
 import com.maumjido.generate.mybatis.source.db.DbColumn;
 import com.maumjido.generate.mybatis.source.dbvendors.Cubrid;
 import com.maumjido.generate.mybatis.source.dbvendors.Mssql;
 import com.maumjido.generate.mybatis.source.dbvendors.Mysql;
 import com.maumjido.generate.mybatis.source.dbvendors.Oracle;
+import com.maumjido.generate.mybatis.source.dbvendors.Tibero;
+import com.maumjido.generate.mybatis.source.util.StringUtil;
 
 public class MybatisGenerate {
 
@@ -46,6 +49,8 @@ public class MybatisGenerate {
       mysql(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath);
     } else if ("sqlserver".equals(dbType)) {
       mssql(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath);
+    } else if ("tibero".equals(dbType)) {
+      tibero(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath);
     } else {
       logger.info("{} 지원하지 않는 jdbc url 입니다. ", dbUrl);
     }
@@ -59,6 +64,9 @@ public class MybatisGenerate {
     String content = GenerateSql.getMybatisMapperConfig(packageName + ".entity", "sql", tableList);
     GenerateConfig.generateConfigFile(packageName, content);
     for (DbColumn table : tableList) {
+      if (StringUtil.isNotEmpty(Constants.INCLUDE_PREFIX_TABLENAME) && !table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+        continue;
+      }
       String tableName = table.getTableName();
       logger.info("{} 테이블 관련 GenerateEntity, GenerateDao, Sql 생성 ", tableName);
 
@@ -79,6 +87,9 @@ public class MybatisGenerate {
 
     GenerateConfig.generateConfigFile(packageName, content);
     for (DbColumn table : tableList) {
+      if (StringUtil.isNotEmpty(Constants.INCLUDE_PREFIX_TABLENAME) && !table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+        continue;
+      }
       String tableName = table.getTableName();
       logger.info("{} 테이블 관련 GenerateEntity, GenerateDao, Sql 생성 ", tableName);
 
@@ -100,11 +111,37 @@ public class MybatisGenerate {
 
     GenerateConfig.generateConfigFile(packageName, content);
     for (DbColumn table : tableList) {
+      if (StringUtil.isNotEmpty(Constants.INCLUDE_PREFIX_TABLENAME) && !table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+        continue;
+      }
       String tableName = table.getTableName();
       String tableComments = table.getTableComments();
       logger.info("{} 테이블 관련 GenerateEntity, GenerateDao, Sql 생성 ", tableName);
 
       List<DbColumn> columns = Oracle.getColumns(tableName, dbUrl, dbId, dbPwd);
+      GenerateEntity.create(entityFilePath, tableName, columns, tableComments);
+      GenerateDao.create(daoFilePath, tableName, columns);
+      GenerateSql.create(sqlFilePath, packageName + ".dao", tableName, columns, tableComments);
+    }
+  }
+
+  private static void tibero(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String entityFilePath, String daoFilePath, String sqlFilePath)
+      throws IOException, UnsupportedEncodingException {
+    // TableList 조회
+    List<DbColumn> tableList = Tibero.getTableList(dbUrl, dbId, dbPwd);
+    logger.info("---------------------Create mybatis-------------------------");
+    String content = GenerateSql.getMybatisMapperConfig(packageName + ".entity", "sql", tableList);
+
+    GenerateConfig.generateConfigFile(packageName, content);
+    for (DbColumn table : tableList) {
+      if (StringUtil.isNotEmpty(Constants.INCLUDE_PREFIX_TABLENAME) && !table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+        continue;
+      }
+      String tableName = table.getTableName();
+      String tableComments = table.getTableComments();
+      logger.info("{} 테이블 관련 GenerateEntity, GenerateDao, Sql 생성 ", tableName);
+
+      List<DbColumn> columns = Tibero.getColumns(tableName, dbUrl, dbId, dbPwd);
       GenerateEntity.create(entityFilePath, tableName, columns, tableComments);
       GenerateDao.create(daoFilePath, tableName, columns);
       GenerateSql.create(sqlFilePath, packageName + ".dao", tableName, columns, tableComments);
@@ -121,6 +158,9 @@ public class MybatisGenerate {
 
     GenerateConfig.generateConfigFile(packageName, content);
     for (DbColumn table : tableList) {
+      if (StringUtil.isNotEmpty(Constants.INCLUDE_PREFIX_TABLENAME) && !table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+        continue;
+      }
       String tableName = table.getTableName();
       String tableComments = table.getTableComments();
       logger.info("{} 테이블 관련 GenerateEntity, GenerateDao, Sql 생성 ", tableName);

@@ -16,6 +16,7 @@ public class Connect {
     MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver"), //
     CUBRID("cubrid.jdbc.driver.CUBRIDDriver"), //
     MYSQL("com.mysql.jdbc.Driver"), //
+    TIBERO("com.tmax.tibero.jdbc.TbDriver"), //
     DB2("com.ibm.db2.jcc.DB2Driver"),;
 
     private String name;
