@@ -264,27 +264,10 @@ public class GenerateSql {
 
   public static String getSelectListCntQuery(String tableName, List<DbColumn> filedList, String tableComment) {
     StringBuffer selectQuery = new StringBuffer();
-    StringBuffer where = new StringBuffer("         WHERE ");
     selectQuery.append("    <select id=\"selectListCount").append("").append("\" resultType=\"Long\">\r\n");
     selectQuery.append("        /* ").append(tableComment).append(" 전체 개수 조회").append(" */").append("\r\n");
     selectQuery.append("        SELECT COUNT(*) AS CNT\r\n");
-    int whereCnt = 0;
-    for (int i = 0; i < filedList.size(); i++) {
-      DbColumn column = filedList.get(i);
-      String columnName = column.getColumnName();
-      String property = StringUtil.convertCamelNaming(columnName, false);
-      if (PRIMARY_KEY.contains("," + column.getConstrainst() + ",")) {
-        if (whereCnt == 0) {
-          where.append(columnName.toLowerCase()).append(" = #{").append(property).append("}\r\n");
-          whereCnt++;
-        } else {
-          where.append("           AND ").append(columnName.toLowerCase()).append(" = #{").append(property).append("}\r\n");
-        }
-        continue;
-      }
-    }
     selectQuery.append("          FROM ").append(tableName).append("\r\n");
-    selectQuery.append(where);
     selectQuery.append("    </select>\r\n");
     return selectQuery.toString();
   }
