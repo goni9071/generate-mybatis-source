@@ -16,6 +16,13 @@ public class SystemProperties {
     return property;
   }
 
+  public static String getProperty(String key, String defaultValue) {
+    String property = systemProperties.properties.getProperty(key);
+    if (property == null)
+      return defaultValue;
+    return property;
+  }
+
   public SystemProperties() {
     properties = new Properties();
     InputStream is = SystemProperties.class.getResourceAsStream("/config.properties");
