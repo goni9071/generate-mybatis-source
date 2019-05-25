@@ -9,4 +9,8 @@ public class Constants {
   public static final String DB_PWD = SystemProperties.getProperty("db.pwd");
   public static final String INCLUDE_PREFIX_TABLENAME = SystemProperties.getProperty("include.prefix.table_name", "");
   public static final String REMOVE_PREFIX_TABLENAME = SystemProperties.getProperty("remove.prefix.table_name");
+  /**
+   * Url 코드 사용여부(Y:사용, N:미사용 - 기본:Y)
+   */
+  public static final String OPTION_USE_URL_CODE = SystemProperties.getProperty("option.use.url_code", "Y");
 }

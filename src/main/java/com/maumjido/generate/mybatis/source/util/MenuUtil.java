@@ -48,7 +48,9 @@ public class MenuUtil {
       menu.setContentsType(row.get(6));
       menu.setUrl(row.get(7));
       menu.setJsp(row.get(8));
-      menu.setCode(row.get(9));
+      if (row.size() > 9) {
+        menu.setCode(row.get(9));
+      }
       menuList.add(menu);
     }
     return menuList;

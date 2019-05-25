@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import %basePackageName%.config.Url;
 import %basePackageName%.controller.bean.JsonResult;
+import %basePackageName%.controller.bean.JsonResult.Code;
 import %basePackageName%.util.PrettyLog;
 
 @Controller
@@ -27,13 +28,13 @@ public class %className%Controller {
    * @param response
    * @param modelMap
    */
-  @RequestMapping(value = { Url.%urlCode% }, method = RequestMethod.%methodType%, produces = %produces%)
+  @RequestMapping(value = { %url% }, method = RequestMethod.%methodType%, produces = %produces%)
   %responseBody%
   public %returnType% %methodName%(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap, //
     PrettyLog prettyLog//
     ) {
-      prettyLog.title("%description%");
-      return %jspFilePath%;
+    prettyLog.title("%description%");
+    %return%;
   }
   [메서드끝]
 }

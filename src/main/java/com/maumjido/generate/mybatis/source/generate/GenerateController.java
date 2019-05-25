@@ -20,17 +20,19 @@ public class GenerateController {
 
   private static final String REPLACE_METHOD_NAME = "%methodName%";
   private static final String REPACEL_RETURN_TYPE = "%returnType%";
-  private static final String REPLACE_JSP_FILE_PATH = "%jspFilePath%";
+  private static final String REPLACE_RETURN = "%return%";
   private static final String REPLACE_JSON_ANNOTATION = "%responseBody%";
   private static final String REPLACE_METHOD_TYPE = "%methodType%";
-  private static final String REPLACE_URL = "%urlCode%";
+  private static final String REPLACE_URL = "%url%";
   private static final String REPLACE_DESCRIPTION = "%description%";
+  private static final boolean useUrlCode = "Y".equals(Constants.OPTION_USE_URL_CODE);
 
   public static void create(List<Menu> menuList) throws UnsupportedEncodingException, IOException {
 
     // Data를 바탕으로 controller 내용 만들기
     Map<String/* Controller ClassName */ //
-        , String /* Controller Contents */> controllerContentMap = GenerateController.getControllerContent(menuList, TemplateUtil.getTemplate("ControllerTemplate.java"), Constants.PACKAGE_BASE);
+        , String /* Controller Contents */> controllerContentMap = GenerateController.getControllerContent(menuList,
+            TemplateUtil.getTemplate("ControllerTemplate.java"), Constants.PACKAGE_BASE);
 
     // Map<String, List<String>> formatMap =
     // StringUtil.formatCheck(controllerContentMap);
@@ -42,7 +44,8 @@ public class GenerateController {
   }
 
   public static Map<String/* Controller ClassName */ //
-      , String /* Controller Contents */> getControllerContent(List<Menu> menuList, String template, String packageName) {
+      , String /* Controller Contents */> getControllerContent(List<Menu> menuList, String template,
+          String packageName) {
     logger.info("--------------------------------------------------------");
     logger.info("Controller 파일 만들기 위한 데이터 가공 시작.");
 
@@ -59,9 +62,16 @@ public class GenerateController {
       String methodType = menu.getMethod();
       String contentType = menu.getContentsType();
       String urlCode = menu.getCode();
+      String jsp = menu.getJsp();
       String methodName = methodType.toLowerCase();
-      if (StringUtil.isEmpty(url) || StringUtil.isEmpty(urlCode) || urlCode.equalsIgnoreCase("null")) {
-        continue;
+      if (useUrlCode) {
+        if (StringUtil.isEmpty(url) || StringUtil.isEmpty(urlCode) || urlCode.equalsIgnoreCase("null")) {
+          continue;
+        }
+      } else {
+        if (StringUtil.isEmpty(url)) {
+          continue;
+        }
       }
 
       String className = null;
@@ -72,32 +82,49 @@ public class GenerateController {
       }
 
       if (!classContentsMap.containsKey(className)) {
-        classContentsMap.put(StringUtil.convertCamelNaming(className, true),
-            base//
-                .replaceAll("%className%", StringUtil.convertCamelNaming(className, true))//
-                .replaceAll("%basePackageName%", Constants.PACKAGE_BASE)//
+        classContentsMap.put(StringUtil.convertCamelNaming(className, true), base//
+            .replaceAll("%className%", StringUtil.convertCamelNaming(className, true))//
+            .replaceAll("%basePackageName%", Constants.PACKAGE_BASE)//
         );
       }
-
-      methodName += StringUtil.convertCamelNaming(urlCode.toLowerCase().replaceAll("\\.", "_"), true);
-
+      if (useUrlCode) {
+        methodName += StringUtil.convertCamelNaming(urlCode.toLowerCase().replaceAll("\\.", "_"), true);
+      } else {
+        methodName += StringUtil.convertCamelNaming(url.toLowerCase().replaceAll("/", "_"), true);
+      }
       if ("JSON".equals(menu.getContentsType())) {
         methodName += "ByJson";
       }
       String contents = classContentsMap.get(className);
+      if (useUrlCode) {
+        contents = contents.replace("import %basePackageName%.config.Url", "");
+      }
+      contents = contents.replaceAll("\\[여기에넣자\\]", methodTemplate//
+          .replaceAll(REPLACE_METHOD_TYPE, methodType)//
+          .replaceAll("%produces%",
+              "JSON".equals(contentType) ? "MediaType.APPLICATION_JSON_UTF8_VALUE" : "MediaType.TEXT_HTML_VALUE")//
+          .replaceAll(REPLACE_JSON_ANNOTATION, "JSON".equals(contentType) ? "@ResponseBody" : "")//
 
-      contents = contents.replaceAll("\\[여기에넣자\\]",
-          methodTemplate//
-              .replaceAll(REPLACE_URL, urlCode)//
-              .replaceAll(REPLACE_METHOD_TYPE, methodType)//
-              .replaceAll("%produces%", "JSON".equals(contentType) ? "MediaType.APPLICATION_JSON_UTF8_VALUE" : "MediaType.TEXT_HTML_VALUE")//
-              .replaceAll(REPLACE_JSON_ANNOTATION, "JSON".equals(contentType) ? "@ResponseBody" : "")//
-              .replaceAll(REPLACE_JSP_FILE_PATH, !"JSON".equals(contentType) ? "Url." + urlCode + "_JSP" : "new JsonResult()")//
-              .replaceAll(REPACEL_RETURN_TYPE, "JSON".equals(contentType) ? "JsonResult" : "String")//
-              .replaceAll(REPLACE_METHOD_NAME, methodName)//
-              .replaceAll(REPLACE_DESCRIPTION, menu.getDescription())//
-              + "\n[여기에넣자]"//
+          .replaceAll(REPACEL_RETURN_TYPE, "JSON".equals(contentType) ? "JsonResult" : "String")//
+          .replaceAll(REPLACE_METHOD_NAME, methodName)//
+          .replaceAll(REPLACE_DESCRIPTION, menu.getDescription())//
+          + "\n[여기에넣자]"//
       );
+      if (useUrlCode) {
+        contents = contents
+            .replaceAll(REPLACE_RETURN,
+                !"JSON".equals(contentType) ? "return Url." + urlCode + "_JSP"
+                    : "JsonResult jsonResult = new JsonResult();\n    jsonResult.setCode(Code.SUCC);\n    return jsonResult")//
+            .replaceAll(REPLACE_URL, urlCode)//
+        ;
+      } else {
+        contents = contents
+            .replaceAll(REPLACE_RETURN,
+                !"JSON".equals(contentType) ? ("return \"" + jsp.replaceAll(".jsp$", "") + "\"")
+                    : "JsonResult jsonResult = new JsonResult();\n    jsonResult.setCode(Code.SUCC);\n    return jsonResult")//
+            .replaceAll(REPLACE_URL, "\"" + url + "\"")//
+        ;
+      }
       classContentsMap.put(className, contents);
     }
     logger.info("Controller 파일 만들기 위한 데이터 가공 끝.");
@@ -113,7 +140,8 @@ public class GenerateController {
           FileUtil.makeDirectory(writeFilePath);
         }
 
-        FileUtil.fileWrite(writeFilePath + className + "Controller.java", classContentsMap.get(className).replaceAll("\\[여기에넣자\\]", ""));
+        FileUtil.fileWrite(writeFilePath + className + "Controller.java",
+            classContentsMap.get(className).replaceAll("\\[여기에넣자\\]", ""));
 
         if (FileUtil.existFile(writeFilePath + className + "Controller.java")) {
           logger.info("Controller 파일 생성 : {} ", className + "Controller.java");

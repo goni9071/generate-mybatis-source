@@ -8,6 +8,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.maumjido.generate.mybatis.source.common.Constants;
 import com.maumjido.generate.mybatis.source.generate.GenerateController;
 import com.maumjido.generate.mybatis.source.generate.GenerateJsp;
 import com.maumjido.generate.mybatis.source.generate.GenerateUrl;
@@ -35,7 +36,10 @@ public class MenuGenerator {
     logger.info(JsonUtil.toJson(menuList));
     GenerateController.create(menuList);
     GenerateJsp.create(menuList);
-    GenerateUrl.create(menuList);
+    
+    if(!"Y".equals(Constants.OPTION_USE_URL_CODE)) {
+      GenerateUrl.create(menuList);
+    }
     logger.info("----------------------------------------------");
     logger.info("Generate Menu End");
     logger.info("----------------------------------------------");
