@@ -1,11 +1,5 @@
 package %packageName%.dao.base;
 
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-
 import kr.co.hisco.hubone.util.IfUtil;
 
 public class CustomPageable {
