@@ -10,9 +10,13 @@ src/main/resources/config.properites 설정하기
     package.base=com.naver
     
     #테이블 접두사가 있어서 객체에서는 제외하고보고 싶다면 아래 항목 설정.
-    #예) TB_BOARD 테이블을 Board.java 로 보고 싶다면 TB_를 설정
+    #예) TB_BOARD 테이블을 Board.java 로 보고 싶다면 TB_를 설정 (콤마를 이용해서 여러개 설정가능)
     #필요없다면 공백
     remove.prefix.table_name=
+    
+    #지정된 접두사로 시작되는 테이블만 처리
+    #예) TB_MEMBER_
+    include.prefix.table_name=
     
     #DB JDBC URL을 Vendor에 맞게 작성.
     #db.url=jdbc:mysql://IP:3306/DBNAME?characterEncoding=utf8&autoReconnect=true
