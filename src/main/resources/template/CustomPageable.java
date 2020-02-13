@@ -6,58 +6,64 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
-public class CustomPageable extends PageRequest implements Pageable {
+import kr.co.hisco.hubone.util.IfUtil;
 
-  public static final int DEFAULT_PAGE_NUMBER = 0;
+public class CustomPageable {
+  private Integer page;
+  private Integer size;
+  private Integer orderType;
+  private boolean oneMore;
+  public static final int DEFAULT_PAGE_NUMBER = 1;
   public static final int DEFAULT_PAGE_SIZE = 10;
-  /**
-   * 
-   */
-  private static final long serialVersionUID = -8841888186692528689L;
-  private boolean isMysql = true;
 
-  @Deprecated
-  public CustomPageable() {
-    super(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
+  public void setSize(int size) {
+    this.size = size;
   }
 
-  /**
-   * Creates a new {@link PageRequest}. Pages are zero indexed, thus providing 0
-   * for {@code page} will return the first page.
-   * 
-   * @param page
-   *          zero-based page index.
-   * @param size
-   *          the size of the page to be returned.
-   */
-  @Deprecated
-  public CustomPageable(int page, int size) {
-    super(page, size);
-  }
-
-  @Deprecated
-  public CustomPageable(int page, int size, Direction direction, String... properties) {
-    super(page, size, new Sort(direction, properties));
-  }
-
-  @Deprecated
-  public CustomPageable(int page, int size, Sort sort) {
-    super(page, size, sort);
+  public void setPage(int page) {
+    this.page = page;
   }
 
   public int getStart() {
-    return getOffset() + (isMysql ? 0 : 1);
+    Integer pageSize = IfUtil.nvl(getPageSize(), DEFAULT_PAGE_SIZE);
+    Integer offset = IfUtil.nvl(getOffset(), DEFAULT_PAGE_NUMBER);
+    return (offset - 1) * pageSize + 1;
+  }
+
+  public Integer getOffset() {
+    return page;
+  }
+
+  public Integer getPage() {
+    return IfUtil.nvl(getOffset(), DEFAULT_PAGE_NUMBER);
   }
 
   public int getEnd() {
-    return isMysql ? getPageSize() : getOffset() + getPageSize();
+    Integer pageSize = IfUtil.nvl(getPageSize(), DEFAULT_PAGE_SIZE);
+    return getStart() - 1 + pageSize + (oneMore ? 1 : 0);
   }
 
-  public boolean isMysql() {
-    return isMysql;
+  public Integer getPageSize() {
+    return size;
   }
 
-  public void setMysql(boolean isMysql) {
-    this.isMysql = isMysql;
+  public Integer getOrderType() {
+    return orderType;
+  }
+
+  public void setOrderType(int orderType) {
+    this.orderType = orderType;
+  }
+
+  public void setOrder(int orderType) {
+    this.orderType = orderType;
+  }
+
+  public boolean isOneMore() {
+    return oneMore;
+  }
+
+  public void setOneMore(boolean oneMore) {
+    this.oneMore = oneMore;
   }
 }
