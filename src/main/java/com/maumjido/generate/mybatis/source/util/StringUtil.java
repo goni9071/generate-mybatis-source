@@ -13,7 +13,16 @@ public class StringUtil {
     if (source == null) {
       return source;
     }
-    source = source.replaceFirst("^" + Constants.REMOVE_PREFIX_TABLENAME, "");
+
+    if (!"".equals(Constants.REMOVE_PREFIX_TABLENAME)) {
+      String[] tokenList = Constants.REMOVE_PREFIX_TABLENAME.split(",");
+      for (int i = 0; i < tokenList.length; i++) {
+        if (StringUtil.isNotEmpty(tokenList[i])) {
+          source = source.toLowerCase().replaceFirst("^" + tokenList[i].toLowerCase(), "");
+        }
+      }
+    }
+
     StringBuffer result = new StringBuffer();
     source = source.toLowerCase();
     boolean isUpper = false;
@@ -34,6 +43,7 @@ public class StringUtil {
 
     return result.toString();
   }
+
 
   public static boolean isEnglish(String txt) {
     boolean isEnglish = true;
