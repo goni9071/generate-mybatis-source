@@ -276,7 +276,7 @@ public class GenerateSql {
     StringBuffer mappers = new StringBuffer();
     mappers.append("    <mappers>\r\n");
     for (DbColumn table : tableNameList) {
-      if (StringUtil.isEmpty(Constants.INCLUDE_PREFIX_TABLENAME) || table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+      if (Constants.filter(table.getTableName())) {
         String tableName = StringUtil.convertCamelNaming(table.getTableName(), false);
         mappers.append("        <mapper resource=\"").append(classpath).append("/").append(tableName).append(".xml\" />\r\n");
       }

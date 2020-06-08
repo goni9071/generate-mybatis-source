@@ -14,7 +14,6 @@ import com.maumjido.generate.mybatis.source.dbvendors.Mssql;
 import com.maumjido.generate.mybatis.source.dbvendors.Mysql;
 import com.maumjido.generate.mybatis.source.dbvendors.Oracle;
 import com.maumjido.generate.mybatis.source.dbvendors.Tibero;
-import com.maumjido.generate.mybatis.source.util.StringUtil;
 
 public class MybatisGenerate {
 
@@ -57,14 +56,15 @@ public class MybatisGenerate {
 
   }
 
-  private static void mysql(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String entityFilePath, String daoFilePath, String sqlFilePath) throws IOException {
+  private static void mysql(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String entityFilePath, String daoFilePath, String sqlFilePath)
+      throws IOException {
     // TableList 조회
     List<DbColumn> tableList = Mysql.getTableList(dbUrl, dbId, dbPwd);
     logger.info("---------------------Create mysql mybatis-------------------------");
     String content = GenerateSql.getMybatisMapperConfig(packageName + ".entity", "sql", tableList);
     GenerateConfig.generateConfigFile(packageName, content);
     for (DbColumn table : tableList) {
-      if (StringUtil.isNotEmpty(Constants.INCLUDE_PREFIX_TABLENAME) && !table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+      if (!Constants.filter(table.getTableName())) {
         continue;
       }
       String tableName = table.getTableName();
@@ -79,7 +79,8 @@ public class MybatisGenerate {
     }
   }
 
-  private static void mssql(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String entityFilePath, String daoFilePath, String sqlFilePath) throws IOException {
+  private static void mssql(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String entityFilePath, String daoFilePath, String sqlFilePath)
+      throws IOException {
     // TableList 조회
     List<DbColumn> tableList = Mssql.getTableList(dbUrl, dbId, dbPwd);
     logger.info("---------------------Create mssql mybatis-------------------------");
@@ -87,7 +88,7 @@ public class MybatisGenerate {
 
     GenerateConfig.generateConfigFile(packageName, content);
     for (DbColumn table : tableList) {
-      if (StringUtil.isNotEmpty(Constants.INCLUDE_PREFIX_TABLENAME) && !table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+      if (!Constants.filter(table.getTableName())) {
         continue;
       }
       String tableName = table.getTableName();
@@ -111,7 +112,7 @@ public class MybatisGenerate {
 
     GenerateConfig.generateConfigFile(packageName, content);
     for (DbColumn table : tableList) {
-      if (StringUtil.isNotEmpty(Constants.INCLUDE_PREFIX_TABLENAME) && !table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+      if (!Constants.filter(table.getTableName())) {
         continue;
       }
       String tableName = table.getTableName();
@@ -134,7 +135,7 @@ public class MybatisGenerate {
 
     GenerateConfig.generateConfigFile(packageName, content);
     for (DbColumn table : tableList) {
-      if (StringUtil.isNotEmpty(Constants.INCLUDE_PREFIX_TABLENAME) && !table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+      if (!Constants.filter(table.getTableName())) {
         continue;
       }
       String tableName = table.getTableName();
@@ -158,7 +159,7 @@ public class MybatisGenerate {
 
     GenerateConfig.generateConfigFile(packageName, content);
     for (DbColumn table : tableList) {
-      if (StringUtil.isNotEmpty(Constants.INCLUDE_PREFIX_TABLENAME) && !table.getTableName().startsWith(Constants.INCLUDE_PREFIX_TABLENAME)) {
+      if (!Constants.filter(table.getTableName())) {
         continue;
       }
       String tableName = table.getTableName();

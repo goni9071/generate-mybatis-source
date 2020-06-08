@@ -12,9 +12,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.maumjido.generate.mybatis.source.common.Constants;
+import com.maumjido.generate.mybatis.source.db.Connect.DriverClass;
 import com.maumjido.generate.mybatis.source.db.DbColumn;
 import com.maumjido.generate.mybatis.source.db.Transaction;
-import com.maumjido.generate.mybatis.source.db.Connect.DriverClass;
 
 public class Oracle {
 
@@ -22,8 +23,19 @@ public class Oracle {
 
   public static List<DbColumn> getColumns(String tableName, String dbUrl, String dbId, String dbPwd) {
     // final String sql = "SHOW COLUMNS FROM " + tableName;
-    final String sql = "SELECT tab_columns.TABLE_NAME, tab_columns.COLUMN_ID, tab_columns.COLUMN_NAME, (case when DATA_TYPE like '%CHAR%' then DATA_TYPE || '(' || DATA_LENGTH || ')' when DATA_TYPE = 'NUMBER' and DATA_PRECISION > 0 and DATA_SCALE > 0 then DATA_TYPE || '(' || DATA_PRECISION || ',' || DATA_SCALE || ')'when DATA_TYPE = 'NUMBER' and DATA_PRECISION > 0 then DATA_TYPE || '(' || DATA_PRECISION || ')'when DATA_TYPE = 'NUMBER' then DATA_TYPE else DATA_TYPE end) DATA_TYPE, decode(NULLABLE, 'N', 'Not Null', 'Null') NULLABLE, DATA_DEFAULT, (SELECT decode(sum((SELECT decode(CONSTRAINT_TYPE, 'P', 1, 'R', 2, 0)FROM USER_CONSTRAINTS  WHERE CONSTRAINT_NAME = cons_columns.CONSTRAINT_NAME)), 1, 'PK', 2, 'FK', 3, 'PK, FK', '') FROM USER_CONS_COLUMNS cons_columns   WHERE TABLE_NAME = tab_columns.TABLE_NAME AND COLUMN_NAME = tab_columns.COLUMN_NAME) CONSTRAINTS, comments.COMMENTS , TAB.COMMENTS as tableComment FROM USER_TAB_COLUMNS tab_columns, USER_COL_COMMENTS comments , ALL_TAB_COMMENTS TAB WHERE tab_columns.TABLE_NAME = comments.TABLE_NAME(+) AND tab_columns.TABLE_NAME = TAB.TABLE_NAME AND tab_columns.COLUMN_NAME = comments.COLUMN_NAME(+) AND tab_columns.TABLE_NAME = '"
-        + tableName + "' ORDER BY tab_columns.TABLE_NAME, COLUMN_ID";
+    final String sql = "SELECT tab_columns.TABLE_NAME, tab_columns.COLUMN_ID, tab_columns.COLUMN_NAME, (case when DATA_TYPE like '%CHAR%' then DATA_TYPE || '(' || DATA_LENGTH || ')' when DATA_TYPE = 'NUMBER' and DATA_PRECISION > 0 and DATA_SCALE > 0 then DATA_TYPE || '(' || DATA_PRECISION || ',' || DATA_SCALE || ')'when DATA_TYPE = 'NUMBER' and DATA_PRECISION > 0 then DATA_TYPE || '(' || DATA_PRECISION || ')'when DATA_TYPE = 'NUMBER' then DATA_TYPE else DATA_TYPE end) DATA_TYPE, decode(NULLABLE, 'N', 'Not Null', 'Null') NULLABLE, DATA_DEFAULT, "//
+        + "(SELECT decode(sum((SELECT decode(CONSTRAINT_TYPE, 'P', 1, 'R', 2, 0)FROM USER_CONSTRAINTS  WHERE CONSTRAINT_NAME = cons_columns.CONSTRAINT_NAME)), 1, 'PK', 2, 'FK', 3, 'PK, FK', '') "
+        + "FROM USER_CONS_COLUMNS cons_columns   "//
+        + "WHERE TABLE_NAME = tab_columns.TABLE_NAME AND COLUMN_NAME = tab_columns.COLUMN_NAME) CONSTRAINTS, comments.COMMENTS , TAB.COMMENTS as tableComment "//
+        + "FROM USER_TAB_COLUMNS tab_columns"//
+        + ", USER_COL_COMMENTS comments "//
+        + ",ALL_TAB_COMMENTS TAB "//
+        + "WHERE tab_columns.TABLE_NAME = comments.TABLE_NAME(+) "//
+        + "AND tab_columns.TABLE_NAME = TAB.TABLE_NAME "//
+        + "AND tab_columns.COLUMN_NAME = comments.COLUMN_NAME(+) "//
+        + "AND TAB.OWNER = '" + Constants.DB_ID + "'"//
+        + "AND tab_columns.TABLE_NAME = '" + tableName + "' "//
+        + "ORDER BY tab_columns.TABLE_NAME, COLUMN_ID";
 
     return (List<DbColumn>) new Transaction(sql, dbUrl, dbId, dbPwd, DriverClass.ORACLE) {
       @Override
@@ -43,7 +55,8 @@ public class Oracle {
             DbColumn column = new DbColumn();
             Map<String, String> result = new HashMap<String, String>();
             if (logger.isDebugEnabled()) {
-              logger.debug("1:{}, 2:{}, 3:{}, 4:{}, 5:{}, 6:{}", new Object[] { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6) });
+              logger.debug("1:{}, 2:{}, 3:{}, 4:{}, 5:{}, 6:{}",
+                  new Object[] { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6) });
             }
             column.setTableName(rs.getString(1));
             column.setColumnId(rs.getString(2));
@@ -69,7 +82,21 @@ public class Oracle {
 
   public static List<DbColumn> getTableList(String url, String id, String pwd) {
     logger.info("DB Table List 조회");
-    final String sql = "SELECT b.TABLE_NAME, b.comments FROM USER_TABLES a LEFT OUTER JOIN all_tab_comments b on a.table_name = b.table_name WHERE b.table_type='TABLE'";
+    String where = "";
+    for (String prefix : Constants.INCLUDE_PREFIX_TABLENAME.split(",")) {
+      if (!prefix.isEmpty()) {
+        where += "  (a.table_name LIKE '" + prefix + "%') OR";
+      }
+    }
+    if (where.endsWith("OR")) {
+      where = " AND (" + where.substring(0, where.length() - 3) + ")";
+    }
+    final String sql = "SELECT  b.TABLE_NAME, b.comments "//
+        + "FROM USER_TABLES a LEFT OUTER JOIN all_tab_comments b on a.table_name = b.table_name "//
+        + "WHERE b.table_type='TABLE'"//
+        + " AND b.OWNER = '" + Constants.DB_ID + "'"//
+        + where//
+    ;//
     return (List<DbColumn>) new Transaction(sql, url, id, pwd, DriverClass.ORACLE) {
       @Override
       public Object doTransaction(Connection con) {

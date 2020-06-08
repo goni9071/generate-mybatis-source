@@ -13,4 +13,16 @@ public class Constants {
    * Url 코드 사용여부(Y:사용, N:미사용 - 기본:Y)
    */
   public static final String OPTION_USE_URL_CODE = SystemProperties.getProperty("option.use.url_code", "Y");
+
+  public static boolean filter(String tableName) {
+    if (INCLUDE_PREFIX_TABLENAME.equals("")) {
+      return true;
+    }
+    for (String prefix : INCLUDE_PREFIX_TABLENAME.split(",")) {
+      if (!prefix.trim().equals("") && tableName.startsWith(prefix)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
