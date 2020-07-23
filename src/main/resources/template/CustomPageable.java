@@ -1,6 +1,6 @@
 package %packageName%.dao.base;
 
-import kr.co.hisco.hubone.util.IfUtil;
+import com.maumjido.generate.mybatis.source.util.IfUtil;
 
 public class CustomPageable {
   private Integer page;
