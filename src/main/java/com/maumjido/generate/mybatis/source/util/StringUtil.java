@@ -115,8 +115,14 @@ public class StringUtil {
       dataType = "Long";
     } else if (dataType.toLowerCase().startsWith("int")) {
       dataType = "Integer";
+    } else if (dataType.toLowerCase().startsWith("tinyint")) {
+      dataType = "Integer";
+    } else if (dataType.toLowerCase().startsWith("smallint")) {
+      dataType = "Integer";
     } else if (dataType.toLowerCase().startsWith("float")) {
       dataType = "Float";
+    } else if (dataType.toLowerCase().startsWith("double")) {
+      dataType = "Double";
     } else if (dataType.toLowerCase().startsWith("number")) {
       if (dataType.contains("(")) {
         dataType = dataType.toLowerCase().replaceAll("\\(", "").replaceFirst("\\)", "").replaceAll("number", "");
