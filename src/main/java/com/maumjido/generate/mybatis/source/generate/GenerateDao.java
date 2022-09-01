@@ -30,7 +30,7 @@ public class GenerateDao {
     String pkDataType = "String";
     for (DbColumn column : filedList) {
       String dataType = column.getDataType();
-      if (column.getColumnName().toLowerCase().endsWith("_id")) {
+      if (GenerateSql.PRIMARY_KEY.contains("," + column.getConstrainst() + ",")) {
         pkDataType = StringUtil.convertDataType(dataType);
         break;
       }
