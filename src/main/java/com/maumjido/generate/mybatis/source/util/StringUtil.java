@@ -111,6 +111,8 @@ public class StringUtil {
       dataType = "String";
     } else if (dataType.toLowerCase().startsWith("date")) {
       dataType = "Date";
+    } else if (dataType.toLowerCase().startsWith("timestamp")) {
+      dataType = "Date";
     } else if (dataType.toLowerCase().startsWith("bigint")) {
       dataType = "Long";
     } else if (dataType.toLowerCase().startsWith("int")) {
