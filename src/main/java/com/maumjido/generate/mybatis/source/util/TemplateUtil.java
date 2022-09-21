@@ -15,6 +15,15 @@ public class TemplateUtil {
     return TemplateUtil.getTemplate("DaoTemplate.java");
   }
 
+  public static String getServiceTemplate() {
+    // dao template 읽기
+    return TemplateUtil.getTemplate("ServiceTemplate.java");
+  }
+  public static String getParameterTemplate() {
+    // dao template 읽기
+    return TemplateUtil.getTemplate("ParameterTemplate.java");
+  }
+
   public static String getTemplate(String templatePath) {
     logger.info("--------------------------------------------------------");
     logger.info("템플릿 파일 경로 : {}", "template/" + templatePath);

@@ -1,20 +1,15 @@
-package%packageName%.dao.base;
+package %packageName%.dao.base;
 
 import java.io.Serializable;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-
-import%packageName%.util.PrettyLog;
+import %packageName%.parameter.SearchParameter;
 
 public interface BaseDao<T, ID extends Serializable> {
 
   default List<T> selectList() {
     return selectList(null);
-  }
-
-  default List<T> selectList(SearchParameter searchParameter) {
-    return selectList(searchParameter);
   }
 
   public List<T> selectList(SearchParameter searchParameter);

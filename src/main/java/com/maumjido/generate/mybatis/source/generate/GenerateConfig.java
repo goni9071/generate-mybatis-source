@@ -1,5 +1,7 @@
 package com.maumjido.generate.mybatis.source.generate;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +13,8 @@ public class GenerateConfig {
   static Logger logger = LoggerFactory.getLogger(GenerateConfig.class);
 
   public static void generateConfigFile(String packageName, String mapperConfig) {
-    String targetPath = "result\\src\\main\\resources\\common\\config\\";
+    String targetPath = "result" + File.separator + "src" + File.separator + "main" + File.separator + "resources"
+        + File.separator + "common" + File.separator + "config" + File.separator + "";
 
     try {
       if (!FileUtil.existDirectory(targetPath)) {

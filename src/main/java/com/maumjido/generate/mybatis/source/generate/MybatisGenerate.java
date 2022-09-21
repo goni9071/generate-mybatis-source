@@ -1,5 +1,6 @@
 package com.maumjido.generate.mybatis.source.generate;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -24,28 +25,37 @@ public class MybatisGenerate {
     return dbUrl.replaceFirst("^jdbc:([^:]+):.*", "$1");
   }
 
-  public static void generate(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath) throws IOException {
+  public static void generate(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath)
+      throws IOException {
     String dbType = getDbType(dbUrl);
 
     generate(packageName, dbUrl, dbId, dbPwd, currentProjectPath, dbType);
   }
 
-  public static void generate(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String dbType) throws IOException {
+  public static void generate(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath,
+      String dbType) throws IOException {
 
-    String basePath = TARGET_PATH + "src\\main\\java\\" + packageName.replaceAll("\\.", "\\\\");
+    String basePath = TARGET_PATH + "src" + File.separator + "main" + File.separator + "java" + File.separator + ""
+        + packageName.replaceAll("\\.", File.separator.equals("\\") ? "\\\\" : File.separator);
 
-    String entityFilePath = basePath + "\\entity";
-    String daoFilePath = basePath + "\\dao";
-    String sqlFilePath = TARGET_PATH + "\\src\\main\\resources\\common\\sql";
+    String entityFilePath = basePath + File.separator + "entity";
+    String daoFilePath = basePath + File.separator + "dao";
+    String serviceFilePath = basePath + File.separator + "service";
+    String parameterFilePath = basePath + File.separator + "parameter";
+    String sqlFilePath = TARGET_PATH + File.separator + "src" + File.separator + "main" + File.separator + "resources"
+        + File.separator + "common" + File.separator + "sql";
 
-    GenerateDao.createDaoStaticTemplate(daoFilePath + "\\base", packageName);
+    GenerateParameter.createParameterStaticTemplate(parameterFilePath, packageName);
+    GenerateDao.createDaoStaticTemplate(daoFilePath + "" + File.separator + "base", packageName);
+    GenerateService.createServiceStaticTemplate(serviceFilePath + "" + File.separator + "base", packageName);
 
     if ("oracle".equals(dbType)) {
       oracle(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath);
     } else if ("cubrid".equals(dbType)) {
       cubrid(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath);
     } else if ("mysql".equals(dbType) || "mariadb".equals(dbType)) {
-      mysql(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath);
+      mysql(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath,
+          serviceFilePath, parameterFilePath);
     } else if ("sqlserver".equals(dbType)) {
       mssql(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath);
     } else if ("tibero".equals(dbType)) {
@@ -56,7 +66,8 @@ public class MybatisGenerate {
 
   }
 
-  private static void mysql(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String entityFilePath, String daoFilePath, String sqlFilePath)
+  private static void mysql(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath,
+      String entityFilePath, String daoFilePath, String sqlFilePath, String serviceFilePath, String parameterFilePath)
       throws IOException {
     // TableList 조회
     List<DbColumn> tableList = Mysql.getTableList(dbUrl, dbId, dbPwd);
@@ -72,15 +83,17 @@ public class MybatisGenerate {
 
       List<DbColumn> columns = Mysql.getColumns(tableName, dbUrl, dbId, dbPwd);
       String tableComment = Mysql.getTableComment(tableName, dbUrl, dbId, dbPwd);
+      GenerateParameter.create(parameterFilePath, tableName, columns);
       GenerateEntity.create(entityFilePath, tableName, columns, tableComment);
       GenerateDao.create(daoFilePath, tableName, columns);
+      GenerateService.create(serviceFilePath, tableName, columns);
 
       GenerateSql.create(sqlFilePath, packageName + ".dao", tableName, columns, tableComment);
     }
   }
 
-  private static void mssql(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String entityFilePath, String daoFilePath, String sqlFilePath)
-      throws IOException {
+  private static void mssql(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath,
+      String entityFilePath, String daoFilePath, String sqlFilePath) throws IOException {
     // TableList 조회
     List<DbColumn> tableList = Mssql.getTableList(dbUrl, dbId, dbPwd);
     logger.info("---------------------Create mssql mybatis-------------------------");
@@ -103,8 +116,8 @@ public class MybatisGenerate {
     }
   }
 
-  private static void oracle(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String entityFilePath, String daoFilePath, String sqlFilePath)
-      throws IOException, UnsupportedEncodingException {
+  private static void oracle(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath,
+      String entityFilePath, String daoFilePath, String sqlFilePath) throws IOException, UnsupportedEncodingException {
     // TableList 조회
     List<DbColumn> tableList = Oracle.getTableList(dbUrl, dbId, dbPwd);
     logger.info("---------------------Create mybatis-------------------------");
@@ -126,8 +139,8 @@ public class MybatisGenerate {
     }
   }
 
-  private static void tibero(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String entityFilePath, String daoFilePath, String sqlFilePath)
-      throws IOException, UnsupportedEncodingException {
+  private static void tibero(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath,
+      String entityFilePath, String daoFilePath, String sqlFilePath) throws IOException, UnsupportedEncodingException {
     // TableList 조회
     List<DbColumn> tableList = Tibero.getTableList(dbUrl, dbId, dbPwd);
     logger.info("---------------------Create mybatis-------------------------");
@@ -149,8 +162,8 @@ public class MybatisGenerate {
     }
   }
 
-  private static void cubrid(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath, String entityFilePath, String daoFilePath, String sqlFilePath)
-      throws IOException, UnsupportedEncodingException {
+  private static void cubrid(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath,
+      String entityFilePath, String daoFilePath, String sqlFilePath) throws IOException, UnsupportedEncodingException {
 
     // TableList 조회
     List<DbColumn> tableList = Cubrid.getTableList(dbUrl, dbId, dbPwd);
