@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+
 import %packageName%.parameter.SearchParameter;
 
 public interface BaseDao<T, ID extends Serializable> {
@@ -16,7 +17,7 @@ public interface BaseDao<T, ID extends Serializable> {
 
   public T selectOne(@Param("id") final ID id);
 
-  public T selectOne(SearchParameter searchParameter);
+  public T selectOneByParam(SearchParameter searchParameter);
 
   public long selectListCount(SearchParameter searchParameter);
 

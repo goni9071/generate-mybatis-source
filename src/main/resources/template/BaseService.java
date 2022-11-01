@@ -13,7 +13,7 @@ import %packageName%.parameter.SearchParameter;
 public class BaseService<T, ID extends Serializable, Dao extends BaseDao<T, ID>> {
 
   @Autowired
-  private Dao dao;
+  protected Dao dao;
 
   @Transactional(readOnly = true)
   public List<T> getList(SearchParameter searchParameter) {
@@ -38,8 +38,8 @@ public class BaseService<T, ID extends Serializable, Dao extends BaseDao<T, ID>>
   }
 
   @Transactional(readOnly = true)
-  public T getOne(SearchParameter searchParameter) {
-    return dao.selectOne(searchParameter);
+  public T getOneByParam(SearchParameter searchParameter) {
+    return dao.selectOneByParam(searchParameter);
   }
 
   @Transactional
