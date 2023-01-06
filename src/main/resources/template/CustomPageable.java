@@ -1,6 +1,6 @@
 package %packageName%.dao.base;
 
-import com.maumjido.generate.mybatis.source.util.IfUtil;
+import %packageName%.util.IfUtil;
 
 public class CustomPageable {
   private Integer page;
