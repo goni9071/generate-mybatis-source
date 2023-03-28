@@ -1,6 +1,6 @@
 package %packageName%.dao.base;
 
-import com.maumjido.generate.mybatis.source.util.IfUtil;
+import %packageName%.util.IfUtil;
 
 public class CustomPageable {
   private Integer page;
@@ -21,7 +21,7 @@ public class CustomPageable {
   public int getStart() {
     Integer pageSize = IfUtil.nvl(getPageSize(), DEFAULT_PAGE_SIZE);
     Integer offset = IfUtil.nvl(getOffset(), DEFAULT_PAGE_NUMBER);
-    return (offset - 1) * pageSize + 1;
+    return (offset - 1) * pageSize;
   }
 
   public Integer getOffset() {
@@ -34,7 +34,7 @@ public class CustomPageable {
 
   public int getEnd() {
     Integer pageSize = IfUtil.nvl(getPageSize(), DEFAULT_PAGE_SIZE);
-    return getStart() - 1 + pageSize + (oneMore ? 1 : 0);
+    return getStart() + pageSize + (oneMore ? 1 : 0);
   }
 
   public Integer getPageSize() {
