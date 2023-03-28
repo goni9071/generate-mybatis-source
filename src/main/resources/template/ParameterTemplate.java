@@ -1,11 +1,11 @@
 package %packageName%.parameter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 [IMPORT]
 
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Setter
+@Getter
 public class %entityName%Param extends SearchParameter {
 %classContents%
 }
