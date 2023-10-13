@@ -17,7 +17,7 @@ import com.maumjido.generate.mybatis.source.db.Transaction;
 public class Postgre {
 
   private static Logger logger = LoggerFactory.getLogger(Postgre.class);
-  private static final String DEFAULT_SCHEMA = "vus";
+  private static final String DEFAULT_SCHEMA = "public";
 
   public static List<DbColumn> getColumns(final String tableName, String dbUrl, String dbId, String dbPwd) {
     final String sql = "SELECT "//
