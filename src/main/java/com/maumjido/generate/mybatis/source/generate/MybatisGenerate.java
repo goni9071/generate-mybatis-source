@@ -14,6 +14,7 @@ import com.maumjido.generate.mybatis.source.dbvendors.Cubrid;
 import com.maumjido.generate.mybatis.source.dbvendors.Mssql;
 import com.maumjido.generate.mybatis.source.dbvendors.Mysql;
 import com.maumjido.generate.mybatis.source.dbvendors.Oracle;
+import com.maumjido.generate.mybatis.source.dbvendors.Postgre;
 import com.maumjido.generate.mybatis.source.dbvendors.Tibero;
 
 public class MybatisGenerate {
@@ -60,6 +61,9 @@ public class MybatisGenerate {
       mssql(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath);
     } else if ("tibero".equals(dbType)) {
       tibero(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath);
+    } else if ("postgresql".equals(dbType)) {
+      postgresql(packageName, dbUrl, dbId, dbPwd, currentProjectPath, entityFilePath, daoFilePath, sqlFilePath,
+          serviceFilePath, parameterFilePath);
     } else {
       logger.info("{} 지원하지 않는 jdbc url 입니다. ", dbUrl);
     }
@@ -83,6 +87,31 @@ public class MybatisGenerate {
 
       List<DbColumn> columns = Mysql.getColumns(tableName, dbUrl, dbId, dbPwd);
       String tableComment = Mysql.getTableComment(tableName, dbUrl, dbId, dbPwd);
+      GenerateParameter.create(parameterFilePath, tableName, columns);
+      GenerateEntity.create(entityFilePath, tableName, columns, tableComment);
+      GenerateDao.create(daoFilePath, tableName, columns);
+      GenerateService.create(serviceFilePath, tableName, columns);
+
+      GenerateSql.create(sqlFilePath, packageName + ".dao", tableName, columns, tableComment);
+    }
+  }
+  private static void postgresql(String packageName, String dbUrl, String dbId, String dbPwd, String currentProjectPath,
+      String entityFilePath, String daoFilePath, String sqlFilePath, String serviceFilePath, String parameterFilePath)
+          throws IOException {
+    // TableList 조회
+    List<DbColumn> tableList = Postgre.getTableList(dbUrl, dbId, dbPwd);
+    logger.info("---------------------Create Postgre mybatis-------------------------");
+    String content = GenerateSql.getMybatisMapperConfig(packageName + ".entity", "sql", tableList);
+    GenerateConfig.generateConfigFile(packageName, content);
+    for (DbColumn table : tableList) {
+      if (!Constants.filter(table.getTableName())) {
+        continue;
+      }
+      String tableName = table.getTableName();
+      logger.info("{} 테이블 관련 GenerateEntity, GenerateDao, Sql 생성 ", tableName);
+
+      List<DbColumn> columns = Postgre.getColumns(tableName, dbUrl, dbId, dbPwd);
+      String tableComment = Postgre.getTableComment(tableName, dbUrl, dbId, dbPwd);
       GenerateParameter.create(parameterFilePath, tableName, columns);
       GenerateEntity.create(entityFilePath, tableName, columns, tableComment);
       GenerateDao.create(daoFilePath, tableName, columns);

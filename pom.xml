@@ -97,6 +97,13 @@
       <artifactId>tibero5-jdbc</artifactId>
       <version>14</version>
     </dependency>
+    <!-- POSTGRE -->
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.6.0</version>
+    </dependency>
+
     <!-- poi -->
     <!-- xls -->
     <dependency>

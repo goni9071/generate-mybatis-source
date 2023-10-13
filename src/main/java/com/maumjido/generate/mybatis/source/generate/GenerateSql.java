@@ -14,7 +14,7 @@ import com.maumjido.generate.mybatis.source.util.StringUtil;
 
 public class GenerateSql {
   public static Logger logger = LoggerFactory.getLogger(GenerateSql.class);
-  public static final String PRIMARY_KEY = ",PK,PRI,";
+  public static final String PRIMARY_KEY = ",PK,PRI,p,";
 
   public static void create(String filePath, String daoPackageName, String tableName, List<DbColumn> filedList,
       String tableComment) throws UnsupportedEncodingException, IOException {

@@ -17,7 +17,9 @@ public class Connect {
     CUBRID("cubrid.jdbc.driver.CUBRIDDriver"), //
     MYSQL("com.mysql.jdbc.Driver"), //
     TIBERO("com.tmax.tibero.jdbc.TbDriver"), //
-    DB2("com.ibm.db2.jcc.DB2Driver"),;
+    DB2("com.ibm.db2.jcc.DB2Driver"),
+    POSTGRE("org.postgresql.Driver"), //
+    ;
 
     private String name;
 
