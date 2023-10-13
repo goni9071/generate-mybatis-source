@@ -290,6 +290,8 @@ public class GenerateSql {
     where.append("               <if test=\"pageable != null\">\r\n");
     if ("oracle".equals(dbType)) {
       where.append("         WHERE ROWNUMBER BETWEEN #{pageable.start} AND #{pageable.end}\r\n");
+    } else if ("postgresql".equals(dbType)) {
+      where.append("         LIMIT #{pageable.end} OFFSET #{pageable.start}\\r\\n");
     } else {
       where.append("         LIMIT #{pageable.start}, #{pageable.end}\r\n");
     }
