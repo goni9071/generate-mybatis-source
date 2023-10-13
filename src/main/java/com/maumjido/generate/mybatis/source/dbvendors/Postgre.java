@@ -17,6 +17,7 @@ import com.maumjido.generate.mybatis.source.db.Transaction;
 public class Postgre {
 
   private static Logger logger = LoggerFactory.getLogger(Postgre.class);
+  private static final String DEFAULT_SCHEMA = "vus";
 
   public static List<DbColumn> getColumns(final String tableName, String dbUrl, String dbId, String dbPwd) {
     final String sql = "SELECT "//
@@ -38,7 +39,7 @@ public class Postgre {
         + "    LEFT JOIN pg_constraint p ON p.conrelid = c.oid AND f.attnum = ANY (p.conkey) "//
         + "WHERE "//
         + "    c.relkind = 'r'::char "//
-        + "    AND n.nspname = 'public'"// 기본 public 처리.
+        + "    AND n.nspname = '" + DEFAULT_SCHEMA + "'"// 기본 public 처리.
         + "    AND c.relname = '" + tableName + "' "//
         + "    AND f.attnum > 0 "//
         + "ORDER BY f.attnum"//
@@ -115,9 +116,9 @@ public class Postgre {
   }
 
   public static List<DbColumn> getTableList(String url, String id, String pwd) {
-    final String sql = "SELECT table_name "//
-        + "FROM information_schema.tables "//
-        + "WHERE table_schema = 'public'"//
+    final String sql = "SELECT tablename "//
+        + "FROM pg_catalog.pg_tables "//
+        + "WHERE schemaname = '" + DEFAULT_SCHEMA + "'"//
         + "";
     return (List<DbColumn>) new Transaction(sql, url, id, pwd, DriverClass.MYSQL) {
       @Override
