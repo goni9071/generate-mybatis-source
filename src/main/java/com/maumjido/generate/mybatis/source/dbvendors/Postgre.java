@@ -17,7 +17,7 @@ import com.maumjido.generate.mybatis.source.db.Transaction;
 public class Postgre {
 
   private static Logger logger = LoggerFactory.getLogger(Postgre.class);
-  private static final String DEFAULT_SCHEMA = "public";
+  private static final String DEFAULT_SCHEMA = "vus";
 
   public static List<DbColumn> getColumns(final String tableName, String dbUrl, String dbId, String dbPwd) {
     final String sql = "SELECT "//
@@ -38,7 +38,7 @@ public class Postgre {
         + "    LEFT JOIN pg_namespace n ON n.oid = c.relnamespace "//
         + "    LEFT JOIN pg_constraint p ON p.conrelid = c.oid AND f.attnum = ANY (p.conkey) "//
         + "WHERE "//
-        + "    c.relkind = 'r'::char "//
+        + "    c.relkind IN ('r', 'c') "//
         + "    AND n.nspname = '" + DEFAULT_SCHEMA + "'"// 기본 public 처리.
         + "    AND c.relname = '" + tableName + "' "//
         + "    AND f.attnum > 0 "//
@@ -85,7 +85,7 @@ public class Postgre {
         + "FROM pg_class c "//
         + "JOIN pg_description pgd ON pgd.objoid = c.oid "//
         + "WHERE pgd.objsubid = 0  "//
-        + "  AND c.relkind = 'r'"//
+        + "  AND (c.relkind = 'r' OR c.relkind = 'm')" // 'r' for regular table, 'm' for materialized view
         + "  AND c.relname = '" + tableName + "'";//
     return (String) new Transaction(sql, dbUrl, dbId, dbPwd, DriverClass.MYSQL) {
       @Override
@@ -119,7 +119,11 @@ public class Postgre {
     final String sql = "SELECT tablename "//
         + "FROM pg_catalog.pg_tables "//
         + "WHERE schemaname = '" + DEFAULT_SCHEMA + "'"//
-        + "";
+        + " UNION "//
+        + "SELECT matviewname AS tablename "//
+        + "FROM pg_catalog.pg_matviews " //
+        + "WHERE schemaname = '" + DEFAULT_SCHEMA + "'"//
+    ;
     return (List<DbColumn>) new Transaction(sql, url, id, pwd, DriverClass.MYSQL) {
       @Override
       public Object doTransaction(Connection con) {
