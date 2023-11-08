@@ -38,7 +38,7 @@ public class Postgre {
         + "    LEFT JOIN pg_namespace n ON n.oid = c.relnamespace "//
         + "    LEFT JOIN pg_constraint p ON p.conrelid = c.oid AND f.attnum = ANY (p.conkey) "//
         + "WHERE "//
-        + "    c.relkind IN ('r', 'c') "//
+        + "    c.relkind IN ('r', 'm') "//
         + "    AND n.nspname = '" + DEFAULT_SCHEMA + "'"// 기본 public 처리.
         + "    AND c.relname = '" + tableName + "' "//
         + "    AND f.attnum > 0 "//
