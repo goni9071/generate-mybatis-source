@@ -20,7 +20,7 @@ public class Mysql {
 
   public static List<DbColumn> getColumns(final String tableName, String dbUrl, String dbId, String dbPwd) {
     // final String sql = "SHOW COLUMNS FROM " + tableName;
-    final String sql = "SHOW FULL COLUMNS FROM " + tableName;
+    final String sql = "SHOW FULL COLUMNS FROM `" + tableName +"`";
     return (List<DbColumn>) new Transaction(sql, dbUrl, dbId, dbPwd, DriverClass.MYSQL) {
       @Override
       public Object doTransaction(Connection con) {
