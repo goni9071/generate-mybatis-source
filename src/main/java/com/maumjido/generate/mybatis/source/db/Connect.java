@@ -15,7 +15,7 @@ public class Connect {
     ORACLE("oracle.jdbc.driver.OracleDriver"), //
     MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver"), //
     CUBRID("cubrid.jdbc.driver.CUBRIDDriver"), //
-    MYSQL("com.mysql.jdbc.Driver"), //
+    MYSQL("com.mysql.cj.jdbc.Driver"), //
     TIBERO("com.tmax.tibero.jdbc.TbDriver"), //
     DB2("com.ibm.db2.jcc.DB2Driver"),
     POSTGRE("org.postgresql.Driver"), //
