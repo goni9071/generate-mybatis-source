@@ -1,8 +1,5 @@
 package %packageName%.parameter;
 
-import java.util.Date;
-
-import ai.withvus.pnd.api.parameter.ApiUserParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
