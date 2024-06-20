@@ -1,12 +1,21 @@
 package %packageName%.parameter;
 
 import %packageName%.dao.base.CustomPageable;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 공통 검색조건
  */
-@Data
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
 public class SearchParameter {
   private int page;
   private int size;

@@ -39,12 +39,16 @@ public class GenerateParameter {
       String dataType = column.getDataType();
       dataType = StringUtil.convertDataType(dataType);
       String field1 = StringUtil.convertCamelNaming(column.getColumnName(), false);
-      String Comment = StringUtil.convertCamelNaming(column.getComments(), false);
-      if (!"".equals(Comment)) {
-        sb.append("  private ").append(dataType).append(" ").append(field1).append(";//").append(Comment)
+      String comment = StringUtil.convertCamelNaming(column.getComments(), false);
+      if (!"".equals(comment)) {
+        sb.append("  private ").append(dataType).append(" ").append(field1).append(";//").append(comment)
             .append("\r\n");
       } else {
         sb.append("  private ").append(dataType).append(" ").append(field1).append(";\r\n");
+      }
+
+      if (dataType.startsWith("String")) {
+        sb.append("  private ").append(dataType).append(" ").append(field1).append("Like;\r\n");
       }
 
       if ("Date".equals(dataType)) {

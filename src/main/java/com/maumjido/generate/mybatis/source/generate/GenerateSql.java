@@ -199,10 +199,18 @@ public class GenerateSql {
       String property = StringUtil.convertCamelNaming(columnName, false);
       String lowerColumnName = columnName.toLowerCase();
 
+
       selectQuery.append("            <if test=\"").append(property).append(" != null\">\r\n");
       selectQuery.append("        AND a.").append(lowerColumnName).append(" = #{").append(property)
           .append("}\r\n");
       selectQuery.append("            </if>\r\n");
+
+      if(column.getDataType().startsWith("varchar")) {
+        selectQuery.append("            <if test=\"").append(property+"Like").append(" != null\">\r\n");
+        selectQuery.append("        AND a.").append(lowerColumnName).append(" LIKE CONCAT('%', #{").append(property)
+            .append("Like}, '%')\r\n");
+        selectQuery.append("            </if>\r\n");
+      }
     }
     selectQuery.append("    </sql>\r\n");
     return selectQuery.toString();
