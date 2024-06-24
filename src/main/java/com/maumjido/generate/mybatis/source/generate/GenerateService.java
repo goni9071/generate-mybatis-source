@@ -23,9 +23,10 @@ public class GenerateService {
   private static final String REPLACE_ENTITY_CLASS_NAME = "%entityName%";
   private static final String REPLACE_PK_DATA_TYPE = "%pkDataType%";
 
-  public static void create(String filePath, String tableName, List<DbColumn> filedList) throws UnsupportedEncodingException, IOException {
+  public static void create(String filePath, String tableName, List<DbColumn> filedList)
+      throws UnsupportedEncodingException, IOException {
     String serviceClassName = StringUtil.convertCamelNaming(tableName) + SUFFIX_SERVICE_CLASS_NAME;
-    String entityClassName = StringUtil.convertCamelNaming(tableName) + GenerateEntity.SUFFIX_ENTITY_CLASS_NAME;
+    String entityClassName = StringUtil.convertCamelNaming(tableName);
     String serviceTemplate = TemplateUtil.getServiceTemplate();
 
     String pkDataType = "String";

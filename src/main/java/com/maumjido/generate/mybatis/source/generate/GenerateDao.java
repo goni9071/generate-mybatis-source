@@ -26,7 +26,7 @@ public class GenerateDao {
   public static void create(String filePath, String tableName, List<DbColumn> filedList)
       throws UnsupportedEncodingException, IOException {
     String daoClassName = StringUtil.convertCamelNaming(tableName) + SUFFIX_DAO_CLASS_NAME;
-    String entityClassName = StringUtil.convertCamelNaming(tableName) + GenerateEntity.SUFFIX_ENTITY_CLASS_NAME;
+    String entityClassName = StringUtil.convertCamelNaming(tableName);
     String daoTemplate = TemplateUtil.getDaoTemplate();
 
     String pkDataType = "String";

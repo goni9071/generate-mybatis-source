@@ -11,17 +11,23 @@ public class TemplateUtil {
   private static Logger logger = LoggerFactory.getLogger(TemplateUtil.class);
 
   public static String getDaoTemplate() {
-    // dao template 읽기
     return TemplateUtil.getTemplate("DaoTemplate.java");
   }
 
+  public static String getBaseMapper() {
+    return TemplateUtil.getTemplate("BaseMapper.xml");
+  }
+
   public static String getServiceTemplate() {
-    // dao template 읽기
     return TemplateUtil.getTemplate("ServiceTemplate.java");
   }
+
   public static String getParameterTemplate() {
-    // dao template 읽기
     return TemplateUtil.getTemplate("ParameterTemplate.java");
+  }
+
+  public static String getBaseParameterTemplate() {
+    return TemplateUtil.getTemplate("BaseParameterTemplate.java");
   }
 
   public static String getTemplate(String templatePath) {

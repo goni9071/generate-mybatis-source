@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="%packageName%.dao.%entityName%Dao">
+  <insert id="insert" parameterType="%entityName%">
+    <include refid="%entityName%.insert"/>
+    <selectKey resultType="Long" keyProperty="entity.id">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <update id="update" parameterType="%entityName%">
+    <include refid="%entityName%.update"/>
+  </update>
+  <delete id="delete" parameterType="%entityName%">
+    <include refid="%entityName%.delete"/>
+  </delete>
+  <select id="selectOne" resultMap="%entityName%.%entityName%RM">
+    <include refid="%entityName%.selectOne"/>
+  </select>
+  <select id="selectOneByParam" resultMap="%entityName%.%entityName%RM">
+    <include refid="%entityName%.selectOneByParam"/>
+  </select>
+  <select id="selectList" resultMap="%entityName%.%entityName%RM">
+    <include refid="%entityName%.selectList"/>
+  </select>
+  <select id="selectListCount" resultType="Long">
+    <include refid="%entityName%.selectListCount"/>
+  </select>
+</mapper>

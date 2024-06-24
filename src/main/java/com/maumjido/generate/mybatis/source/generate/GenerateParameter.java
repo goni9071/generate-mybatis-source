@@ -25,9 +25,29 @@ public class GenerateParameter {
 
   public static void create(String filePath, String tableName, List<DbColumn> filedList)
       throws UnsupportedEncodingException, IOException {
-    String paramClassName = StringUtil.convertCamelNaming(tableName) + SUFFIX_PARAM_CLASS_NAME;
-    String entityClassName = StringUtil.convertCamelNaming(tableName) + GenerateEntity.SUFFIX_ENTITY_CLASS_NAME;
+    String entityClassName = StringUtil.convertCamelNaming(tableName);
+    String paramClassName = entityClassName + SUFFIX_PARAM_CLASS_NAME;
     String parameterTemplate = TemplateUtil.getParameterTemplate();
+
+    parameterTemplate = parameterTemplate.replaceAll(REPLACE_PACKAGE_NAME, Constants.PACKAGE_BASE);
+    parameterTemplate = parameterTemplate.replaceAll(REPLACE_ENTITY_CLASS_NAME, entityClassName);
+
+    if (!FileUtil.existDirectory(filePath)) {
+      FileUtil.makeDirectory(filePath);
+    }
+    FileUtil.fileWrite(filePath + "/" + paramClassName + ".java", parameterTemplate);
+
+    if (FileUtil.existFile(filePath + "/" + paramClassName + ".java") && logger.isDebugEnabled()) {
+      logger.debug("GenerateParameter 파일 생성 : {} ", paramClassName + ".java");
+    }
+    createBase(filePath + "/base", tableName, filedList);
+  }
+
+  public static void createBase(String filePath, String tableName, List<DbColumn> filedList)
+      throws UnsupportedEncodingException, IOException {
+    String entityClassName = StringUtil.convertCamelNaming(tableName);
+    String paramClassName = entityClassName + "Base" + SUFFIX_PARAM_CLASS_NAME;
+    String parameterTemplate = TemplateUtil.getBaseParameterTemplate();
 
     parameterTemplate = parameterTemplate.replaceAll(REPLACE_PACKAGE_NAME, Constants.PACKAGE_BASE);
     parameterTemplate = parameterTemplate.replaceAll(REPLACE_PARAM_CLASS_NAME, paramClassName);
