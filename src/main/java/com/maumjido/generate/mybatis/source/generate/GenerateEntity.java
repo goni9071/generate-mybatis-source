@@ -25,7 +25,6 @@ public class GenerateEntity {
     sb.append("import ").append(PACKAGE_NAME).append(".base.").append(className + "Base").append(";\r\n");
     sb.append("import lombok.Getter;\r\n");
     sb.append("import lombok.Setter;\r\n");
-    sb.append("import lombok.AllArgsConstructor;\r\n");
     sb.append("import lombok.NoArgsConstructor;\r\n");
     sb.append("import lombok.experimental.SuperBuilder;\r\n");
 
@@ -34,7 +33,6 @@ public class GenerateEntity {
     sb.append(" */").append("\r\n");
     sb.append("@Getter\r\n");
     sb.append("@Setter\r\n");
-    sb.append("@AllArgsConstructor\r\n");
     sb.append("@NoArgsConstructor\r\n");
     sb.append("@SuperBuilder\r\n");
     sb.append("public class ").append(className).append(" extends ").append(className + "Base").append(" {\r\n");
